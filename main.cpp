@@ -6,6 +6,58 @@
 #include <cmath>
 
 //temat 1.1
+class interfejs {
+private:
+    sf::Font font;
+    sf::Text wynik;
+    sf::Text zycia;
+    int liczba_wynik;
+    int liczba_zycia;
+
+public:
+    interfejs() : liczba_wynik(0), liczba_zycia(3) {
+        if (!font.loadFromFile("arial.ttf")) {
+            std::cerr << "Nie udalo sie zaladowac czcionki!" << std::endl;
+        }
+        wynik.setFont(font);
+        wynik.setCharacterSize(24);
+        wynik.setFillColor(sf::Color::White);
+        wynik.setPosition(10, 10); // Pozycja w lewym górnym rogu
+
+
+        zycia.setFont(font);
+        zycia.setCharacterSize(24);
+        zycia.setFillColor(sf::Color::White);
+        zycia.setPosition(10, 40); // Pozycja w lewym górnym rogu
+
+        updateText();
+    }
+
+    void draw(sf::RenderWindow& window) {
+        window.draw(wynik);
+        window.draw(zycia);
+    }
+
+    void updateText() {
+        wynik.setString("Wynik: " + std::to_string(liczba_wynik));
+        zycia.setString("Zycia: " + std::to_string(liczba_zycia));
+    }
+
+    void updateScore() {
+        liczba_wynik++;
+        updateText();
+    }
+
+    void updateLives() {
+        liczba_zycia--;
+        updateText();
+    }
+
+    int getLives() const {
+        return liczba_zycia;
+    }
+};
+
 class gracz {
 private:
     sf::Sprite sprite;
@@ -14,11 +66,11 @@ private:
 
 public:
     gracz(float x_in, float y_in) {
-        if (!texture.loadFromFile("Player.jpg")) {
+        if (!texture.loadFromFile("Player.png")) {
             std::cerr << "Nie udalo sie zaladowac tekstury gracza!" << std::endl;
         }
         sprite.setTexture(texture);
-		sprite.setScale(0.1f, 0.1f); // zmniejsz rozmiar gracza
+        sprite.setScale(0.1f, 0.1f); // zmniejsz rozmiar gracza
         sprite.setPosition(x_in, y_in);
         speed = 1.0f; // prêdkoœæ gracza
     }
@@ -39,6 +91,7 @@ public:
     }
 
     const sf::Sprite& getSprite() const { return sprite; }
+    sf::FloatRect getBounds() const { return sprite.getGlobalBounds(); }
 };
 
 class pocisk {
@@ -81,12 +134,14 @@ public:
     const sf::CircleShape& getPocisk() const { return ball; } // zwroc pilke jako const referencje
     sf::Vector2f getPos() const { return ball.getPosition(); }
     bool isOutOfScreen() const { return position.y > 800; } // sprawdz, czy pocisk wyszedl poza ekran
+    sf::FloatRect getBounds() const { return ball.getGlobalBounds(); }
 };
 
 int main() {
-    sf::RenderWindow window(sf::VideoMode(1600, 800), "SFML works!");
+    sf::RenderWindow window(sf::VideoMode(1600, 800), "Zadanie projektowe 1.1");
     std::vector<pocisk> pociski;
     gracz player(800.f, 400.f); // Utwórz gracza na œrodku ekranu
+    interfejs interfejs; // Utwórz obiekt interfejsu
 
     // Inicjalizuj generator liczb losowych
     std::srand(static_cast<unsigned int>(std::time(nullptr)));
@@ -120,6 +175,20 @@ int main() {
         // Ruch gracza
         player.ruch();
 
+        // SprawdŸ kolizje miêdzy graczem a pociskami
+        for (auto& p : pociski) {
+            if (player.getBounds().intersects(p.getBounds())) {
+                interfejs.updateLives();
+                // Mo¿esz usun¹æ pocisk po kolizji, jeœli chcesz
+                p = pociski.back();
+                pociski.pop_back();
+                break; // WyjdŸ z pêtli, aby unikn¹æ wielokrotnych kolizji w jednej klatce
+            }
+        }
+
+        // Aktualizuj wynik i ¿ycie 
+        interfejs.updateScore();
+
         window.clear();
         // Narysuj kazdy pocisk
         for (const auto& p : pociski) {
@@ -127,7 +196,15 @@ int main() {
         }
         // Narysuj gracza
         window.draw(player.getSprite());
+        // Narysuj interfejs
+        interfejs.draw(window);
         window.display();
+
+        // SprawdŸ, czy gracz ma jeszcze ¿ycie
+        if (interfejs.getLives() <= 0) {
+            std::cout << "Koniec gry!" << std::endl;
+            window.close();
+        }
     }
 
     return 0;
