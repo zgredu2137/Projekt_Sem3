@@ -81,8 +81,8 @@ public:
         Tytul.setString("Wybierz Poziom Trudnosci");
         Tytul.setPosition(800 - Tytul.getGlobalBounds().width / 2, 100);
 
-        std::vector<std::string> poziomyTekst = { "Latwy", "Sredni", "Trudny", "Bardzo Trudny", "Niemozliwy" };
-        for (int i = 0; i < 5; ++i) {
+        std::vector<std::string> poziomyTekst = { "Bardzo latwy","Latwy", "Sredni", "Trudny", "Bardzo Trudny", "Niemozliwy", ""};
+        for (int i = 0; i < 6; ++i) {
             sf::Text poziom;
             poziom.setFont(font);
             poziom.setCharacterSize(36);
@@ -255,46 +255,286 @@ public:
     }
 };
 
-class gracz {
+class przeciwnik_zero {
 private:
-    sf::Sprite sprite;
+    std::vector<sf::Sprite> sprites;
+    sf::Texture texture;
+    float speed;
+
+    
+
+
+public:
+    przeciwnik_zero(float windowWidth) {
+        if (!texture.loadFromFile("przeciwnik.png")) {
+            std::cerr << "Nie udalo sie zaladowac tekstury przeciwnika!" << std::endl;
+        }
+        speed = 0.4f; // prêdkoœæ przeciwnika
+
+        // Tworzenie 5 sprite'ów przeciwników
+        for (int i = 0; i < 5; ++i) {
+            sf::Sprite sprite;
+            sprite.setTexture(texture);
+            sprite.setScale(0.3f, 0.3f); // zmniejsz rozmiar przeciwnika
+            sprite.setPosition(100.0f + i * 150.0f, 50.0f); // ustawienie pozycji przeciwników w górnej czêœci ekranu
+            sprites.push_back(sprite);
+        }
+    }
+
+    void ruch() {
+        for (auto& sprite : sprites) {
+            sprite.move(0, speed);
+        }
+        // Update projectiles
+        
+    }
+
+    void draw(sf::RenderWindow& window) {
+        for (const auto& sprite : sprites) {
+            window.draw(sprite);
+        }
+    }
+
+    
+    
+    const std::vector<sf::Sprite>& getSprites() const { return sprites; }
+};
+
+class przeciwnik_jeden {
+private:
+    std::vector<sf::Sprite> sprites;
+    sf::Texture texture;
+    float speed;
+    
+public:
+    przeciwnik_jeden(float windowWidth) {
+        if (!texture.loadFromFile("przeciwnik1.png")) {
+            std::cerr << "Nie udalo sie zaladowac tekstury przeciwnika!" << std::endl;
+        }
+        speed = 0.5f; // prêdkoœæ przeciwnika
+
+        // Tworzenie 5 sprite'ów przeciwników
+        for (int i = 0; i < 6; ++i) {
+            sf::Sprite sprite;
+            sprite.setTexture(texture);
+            sprite.setScale(0.3f, 0.3f); // zmniejsz rozmiar przeciwnika
+            sprite.setPosition(100.0f + i * 150.0f, 50.0f); // ustawienie pozycji przeciwników w górnej czêœci ekranu
+            sprites.push_back(sprite);
+        }
+    }
+
+    void ruch() {
+        for (auto& sprite : sprites) {
+            sprite.move(speed, 0);
+
+            // Odbijanie od krawêdzi ekranu
+            if (sprite.getPosition().x + sprite.getGlobalBounds().width > 1600.0f || sprite.getPosition().x < 0) {
+                speed = -speed;
+                sprite.move(speed, 0); // cofniêcie ruchu po odbiciu
+            }
+        }
+    }
+
+    void draw(sf::RenderWindow& window) {
+        for (const auto& sprite : sprites) {
+            window.draw(sprite);
+        }
+    }
+   
+
+    const std::vector<sf::Sprite>& getSprites() const { return sprites; }
+};
+
+class przeciwnik_dwa {
+private:
+    std::vector<sf::Sprite> sprites;
+    sf::Texture texture;
+    float speed;
+	
+public:
+    przeciwnik_dwa(float windowWidth) {
+        if (!texture.loadFromFile("przeciwnik2.png")) {
+            std::cerr << "Nie udalo sie zaladowac tekstury przeciwnika!" << std::endl;
+        }
+        speed = 0.6f; // prêdkoœæ przeciwnika
+
+        // Tworzenie 5 sprite'ów przeciwników
+        for (int i = 0; i < 7; ++i) {
+            sf::Sprite sprite;
+            sprite.setTexture(texture);
+            sprite.setScale(0.3f, 0.3f); // zmniejsz rozmiar przeciwnika
+            sprite.setPosition(100.0f + i * 150.0f, 50.0f); // ustawienie pozycji przeciwników w górnej czêœci ekranu
+            sprites.push_back(sprite);
+        }
+    }
+
+    void ruch() {
+        for (auto& sprite : sprites) {
+            sprite.move(speed, 0);
+
+            // Odbijanie od krawêdzi ekranu
+            if (sprite.getPosition().x + sprite.getGlobalBounds().width > 1600.0f || sprite.getPosition().x < 0) {
+                speed = -speed;
+                sprite.move(speed, 0); // cofniêcie ruchu po odbiciu
+            }
+        }
+    }
+
+    void draw(sf::RenderWindow& window) {
+        for (const auto& sprite : sprites) {
+            window.draw(sprite);
+        }
+    }
+  
+
+    const std::vector<sf::Sprite>& getSprites() const { return sprites; }
+};
+
+class przeciwnik_trzy {
+private:
+    std::vector<sf::Sprite> sprites;
+    sf::Texture texture;
+    float speed;
+	
+
+public:
+    przeciwnik_trzy(float windowWidth) {
+        if (!texture.loadFromFile("przeciwnik3.png")) {
+            std::cerr << "Nie udalo sie zaladowac tekstury przeciwnika!" << std::endl;
+        }
+        speed = 0.8f; // prêdkoœæ przeciwnika
+
+        // Tworzenie 5 sprite'ów przeciwników
+        for (int i = 0; i < 8; ++i) {
+            sf::Sprite sprite;
+            sprite.setTexture(texture);
+            sprite.setScale(0.2f, 0.2f); // zmniejsz rozmiar przeciwnika
+            sprite.setPosition(100.0f + i * 150.0f, 50.0f); // ustawienie pozycji przeciwników w górnej czêœci ekranu
+            sprites.push_back(sprite);
+        }
+    }
+
+    void ruch() {
+        for (auto& sprite : sprites) {
+            sprite.move(speed, 0);
+
+            // Odbijanie od krawêdzi ekranu
+            if (sprite.getPosition().x + sprite.getGlobalBounds().width > 1600.0f || sprite.getPosition().x < 0) {
+                speed = -speed;
+                sprite.move(speed, 0); // cofniêcie ruchu po odbiciu
+            }
+        }
+    }
+
+    void draw(sf::RenderWindow& window) {
+        for (const auto& sprite : sprites) {
+            window.draw(sprite);
+        }
+    }
+
+
+    const std::vector<sf::Sprite>& getSprites() const { return sprites; }
+};
+
+class przeciwnik_cztery {
+private:
+    std::vector<sf::Sprite> sprites;
     sf::Texture texture;
     float speed;
 
 public:
-    gracz(float x_in, float y_in) {
-        if (!texture.loadFromFile("Player.png")) {
-            std::cerr << "Nie udalo sie zaladowac tekstury gracza!" << std::endl;
+    przeciwnik_cztery(float windowWidth) {
+        if (!texture.loadFromFile("przeciwnik4.gif")) {
+            std::cerr << "Nie udalo sie zaladowac tekstury przeciwnika!" << std::endl;
         }
-        sprite.setTexture(texture);
-        sprite.setScale(0.1f, 0.1f); // zmniejsz rozmiar gracza
-        sprite.setPosition(x_in, y_in);
-        speed = 1.0f; // prêdkoœæ gracza
+        speed = 0.9f; // prêdkoœæ przeciwnika
+
+        // Tworzenie 5 sprite'ów przeciwników
+        for (int i = 0; i < 9; ++i) {
+            sf::Sprite sprite;
+            sprite.setTexture(texture);
+            sprite.setScale(0.3f, 0.3f); // zmniejsz rozmiar przeciwnika
+            sprite.setPosition(100.0f + i * 150.0f, 50.0f); // ustawienie pozycji przeciwników w górnej czêœci ekranu
+            sprites.push_back(sprite);
+        }
     }
 
     void ruch() {
-        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left)) {
-            sprite.move(-speed, 0);
-        }
-        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right)) {
+        for (auto& sprite : sprites) {
             sprite.move(speed, 0);
-        }
-        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up)) {
-            sprite.move(0, -speed);
-        }
-        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down)) {
-            sprite.move(0, speed);
+
+            // Odbijanie od krawêdzi ekranu
+            if (sprite.getPosition().x + sprite.getGlobalBounds().width > 1600.0f || sprite.getPosition().x < 0) {
+                speed = -speed;
+                sprite.move(speed, 0); // cofniêcie ruchu po odbiciu
+            }
         }
     }
 
-    const sf::Sprite& getSprite() const { return sprite; }
-    sf::FloatRect getBounds() const { return sprite.getGlobalBounds(); }
+    void draw(sf::RenderWindow& window) {
+        for (const auto& sprite : sprites) {
+            window.draw(sprite);
+        }
+    }
+
+    const std::vector<sf::Sprite>& getSprites() const { return sprites; }
+};
+
+class przeciwnik_piec {
+private:
+    std::vector<sf::Sprite> sprites;
+    sf::Texture texture;
+    float speed;
+
+public:
+    przeciwnik_piec(float windowWidth) {
+        if (!texture.loadFromFile("przeciwnik5.png")) {
+            std::cerr << "Nie udalo sie zaladowac tekstury przeciwnika!" << std::endl;
+        }
+        speed = 0.9f; // prêdkoœæ przeciwnika
+
+        // Tworzenie 5 sprite'ów przeciwników
+        for (int i = 0; i < 7; ++i) {
+            sf::Sprite sprite;
+            sprite.setTexture(texture);
+            sprite.setScale(0.07f, 0.07f); // zmniejsz rozmiar przeciwnika
+            sprite.setPosition(100.0f + i * 150.0f, 50.0f); // ustawienie pozycji przeciwników w górnej czêœci ekranu
+            sprites.push_back(sprite);
+        }
+
+        for (int i = 0; i < 7; ++i) {
+            sf::Sprite sprite;
+            sprite.setTexture(texture);
+            sprite.setScale(0.07f, 0.07f); // zmniejsz rozmiar przeciwnika
+            sprite.setPosition(150.0f + i * 150.0f, 150.0f); // ustawienie pozycji przeciwników w górnej czêœci ekranu
+            sprites.push_back(sprite);
+        }
+    }
+
+    void ruch() {
+        for (auto& sprite : sprites) {
+            sprite.move(speed, 0);
+
+            // Odbijanie od krawêdzi ekranu
+            if (sprite.getPosition().x + sprite.getGlobalBounds().width > 1600.0f || sprite.getPosition().x < 0) {
+                speed = -speed;
+                sprite.move(speed, 0); // cofniêcie ruchu po odbiciu
+            }
+        }
+    }
+
+    void draw(sf::RenderWindow& window) {
+        for (const auto& sprite : sprites) {
+            window.draw(sprite);
+        }
+    }
+
+    const std::vector<sf::Sprite>& getSprites() const { return sprites; }
 };
 
 class pocisk {
 private:
     sf::Vector2f position; // wspolrzedne
-    float xVel; // predkosc w poziomie
     float yVel; // predkosc w pionie
     sf::CircleShape ball; // pilka
     sf::Texture texture; // tekstura
@@ -310,50 +550,119 @@ public:
         ball.setRadius(10.f); // Zwiêksz promieñ pocisku
         ball.setFillColor(sf::Color::Red);
 
-        // Inicjalizuj generator liczb losowych
-        std::srand(static_cast<unsigned int>(std::time(nullptr)));
-        xVel = static_cast<float>((std::rand() % 3) - 1) * 0.2f; // zmniejszona losowa predkosc w poziomie (-0.2, 0, 0.2)
-        yVel = static_cast<float>((std::rand() % 3) + 1) * 0.2f; // zmniejszona losowa predkosc w pionie (0.2, 0.4, 0.6)
+        yVel = -0.5f; // prêdkoœæ pocisku w górê
     }
 
     void przesun() {
-        // przesun pilke w dol i w poziomie
-        position.x += xVel;
+        // przesun pilke w gore
         position.y += yVel;
         ball.setPosition(position);
-
-        // Zmien kierunek poziomy losowo
-        if (std::rand() % 100 < 20) { // 20% szans na zmiane kierunku
-            xVel = static_cast<float>((std::rand() % 3) - 1) * 0.2f; // zmniejszona losowa predkosc w poziomie (-0.2, 0, 0.2)
-        }
     }
 
     const sf::CircleShape& getPocisk() const { return ball; } // zwroc pilke jako const referencje
     sf::Vector2f getPos() const { return ball.getPosition(); }
-    bool isOutOfScreen() const { return position.y > 800; } // sprawdz, czy pocisk wyszedl poza ekran
+    bool isOutOfScreen() const { return position.y < 0; } // sprawdz, czy pocisk wyszedl poza ekran
     sf::FloatRect getBounds() const { return ball.getGlobalBounds(); }
+};
+
+class gracz {
+private:
+    sf::Sprite sprite;
+    sf::Texture texture;
+    float speed;
+    sf::Clock shootClock; // Zegar do œledzenia czasu miêdzy strza³ami
+    float shootInterval; // Interwa³ czasowy miêdzy strza³ami
+    float windowWidth; // Szerokoœæ okna
+    float windowHeight; // Wysokoœæ okna
+
+public:
+    gracz(float x_in, float y_in) {
+        if (!texture.loadFromFile("Player.png")) {
+            std::cerr << "Nie udalo sie zaladowac tekstury gracza!" << std::endl;
+        }
+        sprite.setTexture(texture);
+        sprite.setScale(0.1f, 0.1f); // zmniejsz rozmiar gracza
+        sprite.setPosition(x_in, y_in);
+        speed = 1.0f; // prêdkoœæ gracza
+        shootInterval = 1.0f; // interwa³ czasowy miêdzy strza³ami w sekundach
+        windowWidth = 1600.0f; // Szerokoœæ okna
+        windowHeight = 800.0f; // Wysokoœæ okna
+    }
+
+    void ruch() {
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left)) {
+            sprite.move(-speed, 0);
+        }
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right)) {
+            sprite.move(speed, 0);
+        }
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up)) {
+            sprite.move(0, -speed);
+        }
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down)) {
+            sprite.move(0, speed);
+        }
+
+        // Ograniczenia ruchu gracza do granic okna
+        sf::Vector2f position = sprite.getPosition();
+        if (position.x < 0) {
+            sprite.setPosition(0, position.y);
+        }
+        if (position.x + sprite.getGlobalBounds().width > windowWidth) {
+            sprite.setPosition(windowWidth - sprite.getGlobalBounds().width, position.y);
+        }
+        if (position.y < 0) {
+            sprite.setPosition(position.x, 0);
+        }
+        if (position.y + sprite.getGlobalBounds().height > windowHeight) {
+            sprite.setPosition(position.x, windowHeight - sprite.getGlobalBounds().height);
+        }
+    }
+
+    bool canShoot() {
+        if (shootClock.getElapsedTime().asSeconds() >= shootInterval) {
+            shootClock.restart();
+            return true;
+        }
+        return false;
+    }
+
+    pocisk shoot() {
+        return pocisk(sprite.getPosition().x + sprite.getGlobalBounds().width / 2, sprite.getPosition().y);
+    }
+
+    const sf::Sprite& getSprite() const { return sprite; }
+    sf::FloatRect getBounds() const { return sprite.getGlobalBounds(); }
 };
 
 int main() {
     sf::RenderWindow window(sf::VideoMode(1600, 800), "Zadanie projektowe 1.1");
+    interfejs interfejs; // Utwórz obiekt interfejsu
     std::vector<pocisk> pociski;
     gracz player(800.f, 400.f); // Utwórz gracza na œrodku ekranu
-    interfejs interfejs; // Utwórz obiekt interfejsu
     menu menu; // Utwórz obiekt menu
     wybor_poziomu wyborPoziomu; // Utwórz obiekt wyboru poziomu
+	
 
     // Inicjalizuj generator liczb losowych
     std::srand(static_cast<unsigned int>(std::time(nullptr)));
-
-    // Zegar do œledzenia czasu
-    sf::Clock clock;
-    float timeToNextPocisk = static_cast<float>((std::rand() % 500 + 100) * std::pow(1.5, std::rand() % 3)); // bardziej nieregularny czas do nastêpnego pocisku
 
     enum GameState { MENU, LEVEL_SELECTION, GAME, END_SCREEN };
     GameState gameState = MENU;
 
     std::vector<std::pair<std::string, int>> wyniki; // Przechowuj wyniki
     std::string nick; // Przechowuj nick gracza
+
+	
+
+	przeciwnik_zero* przeciwnik0 = nullptr; // WskaŸnik na przeciwnika
+    przeciwnik_jeden* przeciwnik1 = nullptr; // WskaŸnik na przeciwnika
+	przeciwnik_dwa* przeciwnik2 = nullptr; // WskaŸnik na przeciwnika
+	przeciwnik_trzy* przeciwnik3 = nullptr; // WskaŸnik na przeciwnika
+	przeciwnik_cztery* przeciwnik4 = nullptr; // WskaŸnik na przeciwnika
+	przeciwnik_piec* przeciwnik5 = nullptr; // WskaŸnik na przeciwnika
+    
+
 
     while (window.isOpen()) {
         sf::Event event;
@@ -375,6 +684,27 @@ int main() {
                     nick = menu.getNick();
                     std::cout << "Wybrany poziom: " << wyborPoziomu.getSelectedLevel() << std::endl;
                     std::cout << "Nick: " << nick << std::endl;
+
+                    
+                    if (wyborPoziomu.getSelectedLevel() == 0) {
+                        przeciwnik0 = new przeciwnik_zero(1600.0f);
+                    }
+                    if(wyborPoziomu.getSelectedLevel() == 1) {
+                        przeciwnik1 = new przeciwnik_jeden(1600.0f);
+                    }
+                    if(wyborPoziomu.getSelectedLevel() == 2) {
+                        przeciwnik2 = new przeciwnik_dwa(1600.0f);
+				    }
+				    if
+                    (wyborPoziomu.getSelectedLevel() == 3) {
+                        przeciwnik3 = new przeciwnik_trzy(1600.0f);
+                    }
+                    if(wyborPoziomu.getSelectedLevel() == 4) {
+                        przeciwnik4 = new przeciwnik_cztery(1600.0f);
+                    }
+                    if(wyborPoziomu.getSelectedLevel() == 5) {
+                        przeciwnik5 = new przeciwnik_piec(1600.0f);
+                    }
                 }
                 break;
             case GAME:
@@ -387,35 +717,19 @@ int main() {
         }
 
         if (gameState == GAME) {
-            // SprawdŸ, czy min¹³ czas do nastêpnego pocisku
-            if (clock.getElapsedTime().asMilliseconds() >= timeToNextPocisk) {
-                pociski.emplace_back(static_cast<float>(std::rand() % 1600), 0.f);
-                timeToNextPocisk = static_cast<float>((std::rand() % 500 + 100) * std::pow(1.5, std::rand() % 3)); // ustaw nowy bardziej nieregularny czas do nastêpnego pocisku
-                clock.restart(); // zrestartuj zegar
+            // SprawdŸ, czy gracz mo¿e wystrzeliæ pocisk
+            if (player.canShoot()) {
+                pociski.push_back(player.shoot());
             }
 
-            // Przesun kazdy pocisk
-            for (auto& p : pociski) {
-                p.przesun();
-            }
-
-            // Usun pociski, ktore wyszly poza ekran
-            pociski.erase(std::remove_if(pociski.begin(), pociski.end(), [](const pocisk& p) { return p.isOutOfScreen(); }), pociski.end());
-
+          
             // Ruch gracza
             player.ruch();
 
-            // SprawdŸ kolizje miêdzy graczem a pociskami
-            for (auto& p : pociski) {
-                if (player.getBounds().intersects(p.getBounds())) {
-                    interfejs.updateLives();
-                    // Mo¿esz usun¹æ pocisk po kolizji, jeœli chcesz
-                    p = pociski.back();
-                    pociski.pop_back();
-                    break; // WyjdŸ z pêtli, aby unikn¹æ wielokrotnych kolizji w jednej klatce
-                }
+			
+            for (auto& pocisk : pociski) {
+                pocisk.przesun();
             }
-
             // Aktualizuj wynik i ¿ycie 
             interfejs.updateScore();
 
@@ -426,6 +740,53 @@ int main() {
             }
             // Narysuj gracza
             window.draw(player.getSprite());
+            // Narysuj przeciwników
+            if (przeciwnik0 != nullptr) {
+                przeciwnik0->ruch();
+                przeciwnik0->draw(window);
+            }
+            else {
+                std::cerr << "przeciwnik0 is nullptr!" << std::endl;
+            }
+			if (przeciwnik1 != nullptr) {
+				przeciwnik1->ruch();
+				przeciwnik1->draw(window);
+			}
+			else {
+				std::cerr << "przeciwnik1 is nullptr!" << std::endl;
+			}
+			if (przeciwnik2 != nullptr) { 
+				przeciwnik2->ruch();
+				przeciwnik2->draw(window);
+			}
+			else {
+				std::cerr << "przeciwnik2 is nullptr!" << std::endl;
+			}
+			if (przeciwnik3 != nullptr) {
+				przeciwnik3->ruch();
+				przeciwnik3->draw(window);
+			}
+			else {
+				std::cerr << "przeciwnik3 is nullptr!" << std::endl;
+			}
+			if (przeciwnik4 != nullptr) {
+				przeciwnik4->ruch();
+				przeciwnik4->draw(window);
+			}
+			else {
+				std::cerr << "przeciwnik4 is nullptr!" << std::endl;
+			}
+			if (przeciwnik5 != nullptr) {
+				przeciwnik5->ruch();
+				przeciwnik5->draw(window);
+			}
+			else {
+				std::cerr << "przeciwnik5 is nullptr!" << std::endl;
+			}
+
+                    
+                          
+			
             // Narysuj interfejs
             interfejs.draw(window);
 
@@ -454,6 +815,14 @@ int main() {
 
         window.display();
     }
+
+    // Zwolnij pamiêæ
+    delete przeciwnik0;
+	delete przeciwnik1;
+	delete przeciwnik2;
+	delete przeciwnik3;
+	delete przeciwnik4;
+	delete przeciwnik5;
 
     return 0;
 }
