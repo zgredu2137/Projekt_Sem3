@@ -433,6 +433,9 @@ public:
         liczba_wynik++;
         updateText();
     }
+    void addScore() {
+        liczba_wynik = liczba_wynik + 100;
+    }
 
     void updateLives() {
         liczba_zycia--;
@@ -521,13 +524,7 @@ public:
         }
     }
     
-    sf::FloatRect getBoundingBox() const {
-       
-        if (!sprites.empty()) {
-            return sprites[0].getGlobalBounds();
-        }
-        return sf::FloatRect();
-    }
+    
     void draw(sf::RenderWindow& window) {
         for (const auto& sprite : sprites) {
             window.draw(sprite);
@@ -535,9 +532,11 @@ public:
     }
 
 
-   
+	std::vector<sf::Sprite>& getSprites() {
+		return sprites;
+	}
     
-    const std::vector<sf::Sprite>& getSprites() const { return sprites; }
+   
 };
 
 class przeciwnik_jeden {
@@ -581,8 +580,10 @@ public:
         }
     }
    
+    std::vector<sf::Sprite>& getSprites() {
+        return sprites;
+    }
     
-    const std::vector<sf::Sprite>& getSprites() const { return sprites; }
 };
 
 class przeciwnik_dwa {
@@ -626,8 +627,10 @@ public:
         }
     }
   
-
-    const std::vector<sf::Sprite>& getSprites() const { return sprites; }
+    std::vector<sf::Sprite>& getSprites() {
+        return sprites;
+    }
+   
 };
 
 class przeciwnik_trzy {
@@ -672,8 +675,11 @@ public:
         }
     }
 
+    std::vector<sf::Sprite>& getSprites() {
+        return sprites;
+    }
 
-    const std::vector<sf::Sprite>& getSprites() const { return sprites; }
+    
 };
 
 class przeciwnik_cztery {
@@ -717,7 +723,10 @@ public:
         }
     }
 
-    const std::vector<sf::Sprite>& getSprites() const { return sprites; }
+    std::vector<sf::Sprite>& getSprites() {
+        return sprites;
+    }
+    
 };
 
 class przeciwnik_piec {
@@ -769,7 +778,10 @@ public:
         }
     }
 
-    const std::vector<sf::Sprite>& getSprites() const { return sprites; }
+    std::vector<sf::Sprite>& getSprites() {
+        return sprites;
+    }
+    
 };
 
 class pocisk_wrogi {
@@ -1014,6 +1026,7 @@ int main() {
             
             // Ruch gracza
             player.ruch();
+
             // Pobranie wspó³rzêdnych ka¿dego pocisku
             for (const auto& bullet : enemyBullets) {
                 if(bullet.getBoundingBox().intersects(player.getBounds())){
@@ -1021,12 +1034,162 @@ int main() {
                 }
             }
             
+            if (przeciwnik0 != nullptr) {
+                for (auto it = przeciwnik0->getSprites().begin(); it != przeciwnik0->getSprites().end(); ) {
+                    bool collision = false;
+                    for (auto bulletIt = pociski.begin(); bulletIt != pociski.end(); ) {
+                        if (bulletIt->getBounds().intersects(it->getGlobalBounds())) {
+                            bulletIt = pociski.erase(bulletIt);
+                            collision = true;
+                            interfejs.updateScore();
+                            break;
+
+                        }
+                        else {
+                            ++bulletIt;
+                        }
+
+                    }
+                    if (collision) {
+                        it = przeciwnik0->getSprites().erase(it);
+                    }
+                    else {
+                        ++it;
+                    }
+
+                }
+            }
+            if (przeciwnik1 != nullptr) {
+                for (auto it = przeciwnik1->getSprites().begin(); it != przeciwnik1->getSprites().end(); ) {
+                    bool collision = false;
+                    for (auto bulletIt = pociski.begin(); bulletIt != pociski.end(); ) {
+                        if (bulletIt->getBounds().intersects(it->getGlobalBounds())) {
+                            bulletIt = pociski.erase(bulletIt);
+                            collision = true;
+                            interfejs.updateScore();
+                            break;
+
+                        }
+                        else {
+                            ++bulletIt;
+                        }
+
+                    }
+                    if (collision) {
+                        it = przeciwnik1->getSprites().erase(it);
+                    }
+                    else {
+                        ++it;
+                    }
+
+                }
+            }
+            if (przeciwnik2 != nullptr) {
+                for (auto it = przeciwnik2->getSprites().begin(); it != przeciwnik2->getSprites().end(); ) {
+                    bool collision = false;
+                    for (auto bulletIt = pociski.begin(); bulletIt != pociski.end(); ) {
+                        if (bulletIt->getBounds().intersects(it->getGlobalBounds())) {
+                            bulletIt = pociski.erase(bulletIt);
+                            collision = true;
+                            interfejs.updateScore();
+                            break;
+
+                        }
+                        else {
+                            ++bulletIt;
+                        }
+
+                    }
+                    if (collision) {
+                        it = przeciwnik2->getSprites().erase(it);
+                    }
+                    else {
+                        ++it;
+                    }
+
+                }
+            }
+            if (przeciwnik3 != nullptr) {
+                for (auto it = przeciwnik3->getSprites().begin(); it != przeciwnik3->getSprites().end(); ) {
+                    bool collision = false;
+                    for (auto bulletIt = pociski.begin(); bulletIt != pociski.end(); ) {
+                        if (bulletIt->getBounds().intersects(it->getGlobalBounds())) {
+                            bulletIt = pociski.erase(bulletIt);
+                            collision = true;
+                            interfejs.updateScore();
+                            break;
+
+                        }
+                        else {
+                            ++bulletIt;
+                        }
+
+                    }
+                    if (collision) {
+                        it = przeciwnik3->getSprites().erase(it);
+                    }
+                    else {
+                        ++it;
+                    }
+
+                }
+            }
+            if (przeciwnik4 != nullptr) {
+                for (auto it = przeciwnik4->getSprites().begin(); it != przeciwnik4->getSprites().end(); ) {
+                    bool collision = false;
+                    for (auto bulletIt = pociski.begin(); bulletIt != pociski.end(); ) {
+                        if (bulletIt->getBounds().intersects(it->getGlobalBounds())) {
+                            bulletIt = pociski.erase(bulletIt);
+                            collision = true;
+                            interfejs.updateScore();
+                            break;
+
+                        }
+                        else {
+                            ++bulletIt;
+                        }
+
+                    }
+                    if (collision) {
+                        it = przeciwnik4->getSprites().erase(it);
+                    }
+                    else {
+                        ++it;
+                    }
+
+                }
+            }
+            if (przeciwnik5 != nullptr) {
+                for (auto it = przeciwnik5->getSprites().begin(); it != przeciwnik5->getSprites().end(); ) {
+                    bool collision = false;
+                    for (auto bulletIt = pociski.begin(); bulletIt != pociski.end(); ) {
+                        if (bulletIt->getBounds().intersects(it->getGlobalBounds())) {
+                            bulletIt = pociski.erase(bulletIt);
+                            collision = true;
+                            interfejs.updateScore();
+                            break;
+
+                        }
+                        else {
+                            ++bulletIt;
+                        }
+
+                    }
+                    if (collision) {
+                        it = przeciwnik5->getSprites().erase(it);
+                    }
+                    else {
+                        ++it;
+                    }
+
+                }
+            }
 
             for (auto& pocisk : pociski) {
                 pocisk.przesun();
             }
             // Aktualizuj wynik i ¿ycie 
-            interfejs.updateScore();
+           
 
 			
 
@@ -1095,7 +1258,7 @@ int main() {
 
             
             enemyBullets.erase(std::remove_if(enemyBullets.begin(), enemyBullets.end(), [](const pocisk_wrogi& bullet) {
-                return bullet.getBoundingBox().top > 600; 
+                return bullet.getBoundingBox().top > 800; 
                 }), enemyBullets.end());
             
 			
