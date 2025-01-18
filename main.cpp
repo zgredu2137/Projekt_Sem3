@@ -5,7 +5,65 @@
 #include <ctime>
 #include <cmath>
 
+
 //temat 1.1
+class pomoc {
+private:
+    sf::Font font;
+	sf::Text Tytul;
+	sf::Text Tekst;
+	sf::Text Kontynuuj;
+
+	bool stan;
+
+public: 
+	pomoc() {
+		if (!font.loadFromFile("arial.ttf")) {
+			std::cerr << "Nie udalo sie zaladowac czcionki!" << std::endl;
+		}
+		Tytul.setFont(font);
+		Tytul.setCharacterSize(48);
+		Tytul.setFillColor(sf::Color::White);
+		Tytul.setString("Pomoc");
+		Tytul.setPosition(800 - Tytul.getGlobalBounds().width / 2, 50);
+
+		Tekst.setFont(font);
+		Tekst.setCharacterSize(36);
+		Tekst.setFillColor(sf::Color::White);
+		Tekst.setString("Witaj w grze! Twoim zadaniem jest zestrzelenie jak najwiekszej ilosci przeciwnikow. \n\nSterowanie: \nup - ruch w gore \ndown - ruch w dol \nlef - ruch w lewo \nright - ruch w prawo \nPowodzenia!");
+		Tekst.setPosition(800 - Tekst.getGlobalBounds().width / 2, 200);
+
+		Kontynuuj.setFont(font);
+		Kontynuuj.setCharacterSize(36);
+		Kontynuuj.setFillColor(sf::Color::White);
+		Kontynuuj.setString("Kontynuuj");
+		Kontynuuj.setPosition(800 - Kontynuuj.getGlobalBounds().width / 2, 500);
+	}
+
+	void draw(sf::RenderWindow& window) {
+		window.draw(Tytul);
+		window.draw(Tekst);
+		window.draw(Kontynuuj);
+	}
+
+	void handleEvent(const sf::Event& event) {
+		if (event.type == sf::Event::MouseButtonPressed) {
+			if (Kontynuuj.getGlobalBounds().contains(event.mouseButton.x, event.mouseButton.y)) {
+				stan = true;
+			}
+		}
+	}
+	void reset() {
+		stan = false;
+	}
+	bool getstan() const {
+		return stan;
+	}
+
+
+
+};
+
 class ekran_koncowy {
 private:
     sf::Font font;
@@ -13,13 +71,15 @@ private:
     sf::Text TwojWynik;
     sf::Text KoniecGry;
     std::vector<sf::Text> NickiWyniki;
+	
 
 public:
+	//Konstrutkor z parametrami
     ekran_koncowy(const std::vector<std::pair<std::string, int>>& wyniki, const std::string& twojNick, int twojWynik) {
         if (!font.loadFromFile("arial.ttf")) {
             std::cerr << "Nie udalo sie zaladowac czcionki!" << std::endl;
         }
-
+        
         Tytul.setFont(font);
         Tytul.setCharacterSize(48);
         Tytul.setFillColor(sf::Color::White);
@@ -37,6 +97,7 @@ public:
         KoniecGry.setFillColor(sf::Color::White);
         KoniecGry.setString("Koniec gry!");
         KoniecGry.setPosition(800 - KoniecGry.getGlobalBounds().width / 2, 200);
+		
 
         int yOffset = 250;
         for (const auto& wynik : wyniki) {
@@ -59,8 +120,132 @@ public:
             window.draw(nickWynik);
         }
     }
+	
+	
 };
 
+class wybor_koncowy {
+private:
+	sf::Font font;
+	sf::Text Tytul;
+	sf::Text Koniec;
+	sf::Text JeszczeRaz;
+	bool stan3;
+	bool stan4;
+
+public:
+    wybor_koncowy() : stan3(false), stan4(false) {
+        if (!font.loadFromFile("arial.ttf")) {
+            std::cerr << "Nie udalo sie zaladowac czcionki!" << std::endl;
+        }
+        Tytul.setFont(font);
+        Tytul.setCharacterSize(48);
+        Tytul.setFillColor(sf::Color::White);
+        Tytul.setString("Projekt 1.1");
+        Tytul.setPosition(400 - Tytul.getGlobalBounds().width / 2, 300);
+
+        Koniec.setFont(font);
+        Koniec.setCharacterSize(36);
+        Koniec.setFillColor(sf::Color::White);
+        Koniec.setString("Koniec");
+        Koniec.setPosition(400 - Koniec.getGlobalBounds().width / 2, 400);
+
+        JeszczeRaz.setFont(font);
+        JeszczeRaz.setCharacterSize(36);
+        JeszczeRaz.setFillColor(sf::Color::White);
+        JeszczeRaz.setString("Jeszcze raz");
+        JeszczeRaz.setPosition(400 - JeszczeRaz.getGlobalBounds().width / 2, 500);
+    }
+        void draw(sf::RenderWindow & window) {
+            window.draw(Tytul);
+            window.draw(Koniec);
+            window.draw(JeszczeRaz);
+        }
+        void handleevent(const sf::Event & event) {
+            if (event.type == sf::Event::MouseButtonPressed) {
+                if (Koniec.getGlobalBounds().contains(event.mouseButton.x, event.mouseButton.y)) {
+                    stan3 = true;
+                }
+                if (JeszczeRaz.getGlobalBounds().contains(event.mouseButton.x, event.mouseButton.y)) {
+                    stan4 = true;
+                }
+            }
+        }
+        void reset() {
+            stan3 = false;
+            stan4 = false;
+        }
+        bool getstan3() const {
+            return stan3;
+        }
+        bool getstan4() const {
+            return stan4;
+        }
+    
+};
+
+class pauza {
+private:
+    sf::Font font;
+    sf::Text Tytul;
+    sf::Text Kontynuuj;
+    sf::Text Koniec;
+
+    bool stan1;
+    bool stan2;
+
+public:
+    pauza() : stan1(false), stan2(false) {
+        if (!font.loadFromFile("arial.ttf")) {
+            std::cerr << "Nie udalo sie zaladowac czcionki!" << std::endl;
+        }
+        Tytul.setFont(font);
+        Tytul.setCharacterSize(48);
+        Tytul.setFillColor(sf::Color::White);
+        Tytul.setString("Pauza");
+        Tytul.setPosition(800 - Tytul.getGlobalBounds().width / 2, 50);
+
+        Kontynuuj.setFont(font);
+        Kontynuuj.setCharacterSize(36);
+        Kontynuuj.setFillColor(sf::Color::White);
+        Kontynuuj.setString("Kontynuuj");
+        Kontynuuj.setPosition(800 - Kontynuuj.getGlobalBounds().width / 2, 200);
+		
+        Koniec.setFont(font);
+        Koniec.setCharacterSize(36);
+        Koniec.setFillColor(sf::Color::White);
+        Koniec.setString("Koniec gry");
+        Koniec.setPosition(800 - Koniec.getGlobalBounds().width / 2, 300);
+       
+    }
+
+    void draw(sf::RenderWindow& window) {
+        window.draw(Tytul);
+        window.draw(Kontynuuj);
+        window.draw(Koniec);
+    }
+    void handleevent(const sf::Event& event) {
+        if (event.type == sf::Event::MouseButtonPressed) {
+            if (Kontynuuj.getGlobalBounds().contains(event.mouseButton.x, event.mouseButton.y)) {
+                stan1 = true;
+            }
+            if (Koniec.getGlobalBounds().contains(event.mouseButton.x, event.mouseButton.y)) {
+                stan2 = true;
+            }
+        }
+    }
+
+	bool getstan1() const {
+		return stan1;
+    }
+    bool getstan2() const {
+        return stan2;
+    }
+	void reset() {
+		stan1 = false;
+		stan2 = false;
+	}
+};
 
 class wybor_poziomu {
 private:
@@ -114,6 +299,9 @@ public:
     int getSelectedLevel() const {
         return selectedLevel;
     }
+	void reset() {
+		selectedLevel = -1;
+	}
 };
 
 class menu {
@@ -233,6 +421,7 @@ public:
     void draw(sf::RenderWindow& window) {
         window.draw(wynik);
         window.draw(zycia);
+		
     }
 
     void updateText() {
@@ -249,9 +438,48 @@ public:
         liczba_zycia--;
         updateText();
     }
+	void ZyciaReset() {
+		liczba_zycia = 3;
+		updateText();
+	}
 
     int getLives() const {
         return liczba_zycia;
+    }
+	int getScore() const {
+		return liczba_wynik;
+	}
+    void drawTlo(sf::RenderWindow& window) {
+        std::srand(static_cast<unsigned int>(std::time(nullptr)));
+
+        for (int i = 0; i < 10; i++) {
+            sf::CircleShape circle(5);
+            circle.setFillColor(sf::Color(std::rand() % 256, std::rand() % 256, std::rand() % 256));
+            circle.setPosition(std::rand() % 1600, std::rand() % 800);
+            window.draw(circle);
+        }
+
+        for (int i = 0; i < 10; i++) {
+            sf::CircleShape star(1, 3);
+            star.setFillColor(sf::Color(std::rand() % 256, std::rand() % 256, std::rand() % 256));
+            star.setPosition(std::rand() % 1600, std::rand() % 800);
+            window.draw(star);
+        }
+
+        for (int i = 0; i < 10; i++) {
+            sf::CircleShape heart(2);
+            heart.setFillColor(sf::Color(std::rand() % 256, std::rand() % 256, std::rand() % 256));
+            heart.setPosition(std::rand() % 1600, std::rand() % 800);
+            window.draw(heart);
+        }
+
+        for (int i = 0; i < 10; i++) {
+            sf::CircleShape snowflake(2);
+            snowflake.setFillColor(sf::Color(std::rand() % 256, std::rand() % 256, std::rand() % 256));
+            snowflake.setPosition(std::rand() % 1600, std::rand() % 800);
+            window.draw(snowflake);
+        }
+
     }
 };
 
@@ -260,7 +488,7 @@ private:
     std::vector<sf::Sprite> sprites;
     sf::Texture texture;
     float speed;
-
+   
     
 
 
@@ -283,19 +511,31 @@ public:
 
     void ruch() {
         for (auto& sprite : sprites) {
-            sprite.move(0, speed);
-        }
-        // Update projectiles
-        
-    }
+            sprite.move(speed, 0);
 
+            // Odbijanie od krawÍdzi ekranu
+            if (sprite.getPosition().x + sprite.getGlobalBounds().width > 1600.0f || sprite.getPosition().x < 0) {
+                speed = -speed;
+                sprite.move(speed, 0); // cofniÍcie ruchu po odbiciu
+            }
+        }
+    }
+    
+    sf::FloatRect getBoundingBox() const {
+       
+        if (!sprites.empty()) {
+            return sprites[0].getGlobalBounds();
+        }
+        return sf::FloatRect();
+    }
     void draw(sf::RenderWindow& window) {
         for (const auto& sprite : sprites) {
             window.draw(sprite);
         }
     }
 
-    
+
+   
     
     const std::vector<sf::Sprite>& getSprites() const { return sprites; }
 };
@@ -341,7 +581,7 @@ public:
         }
     }
    
-
+    
     const std::vector<sf::Sprite>& getSprites() const { return sprites; }
 };
 
@@ -532,6 +772,33 @@ public:
     const std::vector<sf::Sprite>& getSprites() const { return sprites; }
 };
 
+class pocisk_wrogi {
+private:
+    sf::Sprite sprite;
+
+public:
+    pocisk_wrogi(const sf::Texture& texture, const sf::Vector2f& position) {
+        sprite.setTexture(texture);
+        sprite.setPosition(position);
+		sprite.setScale(0.1f, 0.1f); // Zmniejsz rozmiar pocisku wroga
+    }
+
+    void update() {
+        
+		sprite.move(0, 0.5f);
+    }
+
+    void draw(sf::RenderWindow& window) {
+        window.draw(sprite);
+    }
+
+    sf::FloatRect getBoundingBox() const {
+        return sprite.getGlobalBounds();
+    }
+
+    
+};
+
 class pocisk {
 private:
     sf::Vector2f position; // wspolrzedne
@@ -541,9 +808,7 @@ private:
 
 public:
     pocisk(float x_in, float y_in) {
-        if (!texture.loadFromFile("pocisk.jpg")) {
-            std::cerr << "Nie udalo sie zaladowac tekstury!" << std::endl;
-        }
+       
         ball.setTexture(&texture);
         position = sf::Vector2f(x_in, y_in);
         ball.setPosition(position);
@@ -558,7 +823,8 @@ public:
         position.y += yVel;
         ball.setPosition(position);
     }
-
+    
+    
     const sf::CircleShape& getPocisk() const { return ball; } // zwroc pilke jako const referencje
     sf::Vector2f getPos() const { return ball.getPosition(); }
     bool isOutOfScreen() const { return position.y < 0; } // sprawdz, czy pocisk wyszedl poza ekran
@@ -642,12 +908,22 @@ int main() {
     gracz player(800.f, 400.f); // UtwÛrz gracza na úrodku ekranu
     menu menu; // UtwÛrz obiekt menu
     wybor_poziomu wyborPoziomu; // UtwÛrz obiekt wyboru poziomu
-	
-
+	pauza pauza; // UtwÛrz obiekt pauzy 
+    wybor_koncowy wybor_koncowy;
     // Inicjalizuj generator liczb losowych
     std::srand(static_cast<unsigned int>(std::time(nullptr)));
 
-    enum GameState { MENU, LEVEL_SELECTION, GAME, END_SCREEN };
+    sf::Clock clock;
+    sf::Time shootInterval = sf::seconds(1);
+    sf::Texture bulletTexture;
+    std::vector<pocisk_wrogi> enemyBullets;
+	if (!bulletTexture.loadFromFile("bullet.png")) {
+		std::cerr << "Nie udalo sie zaladowac tekstury pocisku!" << std::endl;
+	}
+
+  
+
+    enum GameState { MENU, LEVEL_SELECTION, GAME, END_SCREEN, stop, Pomoc };
     GameState gameState = MENU;
 
     std::vector<std::pair<std::string, int>> wyniki; // Przechowuj wyniki
@@ -682,56 +958,77 @@ int main() {
                 if (wyborPoziomu.getSelectedLevel() != -1) {
                     gameState = GAME;
                     nick = menu.getNick();
-                    std::cout << "Wybrany poziom: " << wyborPoziomu.getSelectedLevel() << std::endl;
-                    std::cout << "Nick: " << nick << std::endl;
 
-                    
                     if (wyborPoziomu.getSelectedLevel() == 0) {
                         przeciwnik0 = new przeciwnik_zero(1600.0f);
                     }
-                    if(wyborPoziomu.getSelectedLevel() == 1) {
+                    if (wyborPoziomu.getSelectedLevel() == 1) {
                         przeciwnik1 = new przeciwnik_jeden(1600.0f);
                     }
-                    if(wyborPoziomu.getSelectedLevel() == 2) {
+                    if (wyborPoziomu.getSelectedLevel() == 2) {
                         przeciwnik2 = new przeciwnik_dwa(1600.0f);
-				    }
-				    if
-                    (wyborPoziomu.getSelectedLevel() == 3) {
+                    }
+                    if
+                        (wyborPoziomu.getSelectedLevel() == 3) {
                         przeciwnik3 = new przeciwnik_trzy(1600.0f);
                     }
-                    if(wyborPoziomu.getSelectedLevel() == 4) {
+                    if (wyborPoziomu.getSelectedLevel() == 4) {
                         przeciwnik4 = new przeciwnik_cztery(1600.0f);
                     }
-                    if(wyborPoziomu.getSelectedLevel() == 5) {
+                    if (wyborPoziomu.getSelectedLevel() == 5) {
                         przeciwnik5 = new przeciwnik_piec(1600.0f);
                     }
                 }
                 break;
             case GAME:
+                if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Escape) {
+                    gameState = stop;
+                }
+                if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::F1) {
+                    gameState = Pomoc;
+                }
                 // Obs≥uga zdarzeÒ w grze
                 break;
+            case stop:
+
+
+                // Obs≥uga zdarzeÒ w pauzie
+                break;
             case END_SCREEN:
+
                 // Obs≥uga zdarzeÒ na ekranie koÒcowym
                 break;
-            }
+            
+            case Pomoc:
+                // Obs≥uga zdarzeÒ na ekranie pomocy
+             break;
+            }   
         }
-
+       
         if (gameState == GAME) {
             // Sprawdü, czy gracz moøe wystrzeliÊ pocisk
             if (player.canShoot()) {
                 pociski.push_back(player.shoot());
-            }
 
-          
+            }
+            
             // Ruch gracza
             player.ruch();
+            // Pobranie wspÛ≥rzÍdnych kaødego pocisku
+            for (const auto& bullet : enemyBullets) {
+                if(bullet.getBoundingBox().intersects(player.getBounds())){
+                    interfejs.updateLives();
+                }
+            }
+            
 
-			
             for (auto& pocisk : pociski) {
                 pocisk.przesun();
             }
             // Aktualizuj wynik i øycie 
             interfejs.updateScore();
+
+			
 
             window.clear();
             // Narysuj kazdy pocisk
@@ -783,12 +1080,28 @@ int main() {
 			else {
 				std::cerr << "przeciwnik5 is nullptr!" << std::endl;
 			}
+			
+            if (clock.getElapsedTime() >= shootInterval) {
+                sf::Vector2f position(rand() % 800, 0); 
+                enemyBullets.emplace_back(bulletTexture, position);
+                clock.restart();
+            }
 
-                    
-                          
+            
+            for (auto& bullet : enemyBullets) {
+                bullet.update();
+                bullet.draw(window);
+            }
+
+            
+            enemyBullets.erase(std::remove_if(enemyBullets.begin(), enemyBullets.end(), [](const pocisk_wrogi& bullet) {
+                return bullet.getBoundingBox().top > 600; 
+                }), enemyBullets.end());
+            
 			
             // Narysuj interfejs
             interfejs.draw(window);
+            interfejs.drawTlo(window);
 
             // Sprawdü, czy gracz ma jeszcze øycie
             if (interfejs.getLives() <= 0) {
@@ -800,16 +1113,53 @@ int main() {
         }
         else if (gameState == END_SCREEN) {
             window.clear();
-            ekran_koncowy ekranKoncowy(wyniki, nick, interfejs.getLives());
+            ekran_koncowy ekranKoncowy(wyniki, nick,interfejs.getScore());
             ekranKoncowy.draw(window);
+			wybor_koncowy.draw(window);
+			wybor_koncowy.handleevent(event);
+            if (wybor_koncowy.getstan3() == true) {
+                return 0;
+            }
+			if (wybor_koncowy.getstan4() == true) {
+				gameState = MENU;
+			}
+
+            wybor_koncowy.reset();
+
         }
+		else if (gameState == stop) {
+			window.clear();
+			pauza.draw(window);
+			pauza.handleevent(event);
+
+            if (pauza.getstan1() == true) {
+                gameState = GAME;
+            }
+            if (pauza.getstan2() == true) {
+
+                gameState = END_SCREEN;
+            }
+			pauza.reset();
+		}
+		else if (gameState == Pomoc) {
+			window.clear();
+			pomoc pomoc;
+			pomoc.draw(window);
+			pomoc.handleEvent(event);
+			if (pomoc.getstan() == true) {
+				gameState = GAME;
+			}
+			pomoc.reset();
+		}
         else {
             window.clear();
             if (gameState == MENU) {
                 menu.draw(window);
+				interfejs.ZyciaReset();
             }
             else if (gameState == LEVEL_SELECTION) {
                 wyborPoziomu.draw(window);
+				wyborPoziomu.reset();
             }
         }
 
@@ -822,8 +1172,9 @@ int main() {
 	delete przeciwnik2;
 	delete przeciwnik3;
 	delete przeciwnik4;
-	delete przeciwnik5;
-
+    delete przeciwnik5;
+    
     return 0;
 }
+
 
