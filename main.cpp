@@ -396,10 +396,12 @@ private:
     sf::Font font;
     sf::Text wynik;
     sf::Text zycia;
-    int liczba_wynik;
-    int liczba_zycia;
+    
+    
 
 public:
+    int liczba_wynik;
+    int liczba_zycia;
     interfejs() : liczba_wynik(0), liczba_zycia(3) {
         if (!font.loadFromFile("arial.ttf")) {
             std::cerr << "Nie udalo sie zaladowac czcionki!" << std::endl;
@@ -427,6 +429,15 @@ public:
     void updateText() {
         wynik.setString("Wynik: " + std::to_string(liczba_wynik));
         zycia.setString("Zycia: " + std::to_string(liczba_zycia));
+    }
+    void resetScore() {
+        liczba_wynik = 0;
+        updateText();
+    }
+    void resetAll() {
+        liczba_wynik = 0;
+        liczba_zycia = 3;
+        updateText();
     }
 
     void updateScore() {
@@ -463,10 +474,10 @@ public:
         }
 
         for (int i = 0; i < 10; i++) {
-            sf::CircleShape star(1, 3);
-            star.setFillColor(sf::Color(std::rand() % 256, std::rand() % 256, std::rand() % 256));
-            star.setPosition(std::rand() % 1600, std::rand() % 800);
-            window.draw(star);
+            sf::CircleShape triangle(1, 3);
+            triangle.setFillColor(sf::Color(std::rand() % 256, std::rand() % 256, std::rand() % 256));
+            triangle.setPosition(std::rand() % 1600, std::rand() % 800);
+            window.draw(triangle);
         }
 
         for (int i = 0; i < 10; i++) {
@@ -866,6 +877,14 @@ public:
         windowWidth = 1600.0f; // Szerokoœæ okna
         windowHeight = 800.0f; // Wysokoœæ okna
     }
+    void reset() {
+        // Przywróæ pocz¹tkow¹ pozycjê
+        sprite.setPosition(800.f, 400.f);
+        // Zresetuj zegar strzelania
+        shootClock.restart();
+        // Upewnij siê, ¿e skala jest prawid³owa
+        sprite.setScale(0.1f, 0.1f);
+    }
 
     void ruch() {
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left)) {
@@ -925,6 +944,14 @@ int main() {
     // Inicjalizuj generator liczb losowych
     std::srand(static_cast<unsigned int>(std::time(nullptr)));
 
+	int przeciwnik0_stan = 0;
+	int przeciwnik1_stan = 0;
+	int przeciwnik2_stan = 0;
+	int przeciwnik3_stan = 0;
+	int przeciwnik4_stan = 0;
+	int przeciwnik5_stan = 0;
+
+	
     sf::Clock clock;
     sf::Time shootInterval = sf::seconds(1);
     sf::Texture bulletTexture;
@@ -950,6 +977,7 @@ int main() {
 	przeciwnik_cztery* przeciwnik4 = nullptr; // WskaŸnik na przeciwnika
 	przeciwnik_piec* przeciwnik5 = nullptr; // WskaŸnik na przeciwnika
     
+	
 
 
     while (window.isOpen()) {
@@ -963,6 +991,7 @@ int main() {
                 menu.handleEvent(event);
                 if (menu.isStartButtonPressed(event)) {
                     gameState = LEVEL_SELECTION;
+					interfejs.ZyciaReset();
                 }
                 break;
             case LEVEL_SELECTION:
@@ -970,6 +999,7 @@ int main() {
                 if (wyborPoziomu.getSelectedLevel() != -1) {
                     gameState = GAME;
                     nick = menu.getNick();
+					interfejs.ZyciaReset();
 
                     if (wyborPoziomu.getSelectedLevel() == 0) {
                         przeciwnik0 = new przeciwnik_zero(1600.0f);
@@ -1007,7 +1037,7 @@ int main() {
                 // Obs³uga zdarzeñ w pauzie
                 break;
             case END_SCREEN:
-
+				interfejs.ZyciaReset();
                 // Obs³uga zdarzeñ na ekranie koñcowym
                 break;
             
@@ -1028,9 +1058,15 @@ int main() {
             player.ruch();
 
             // Pobranie wspó³rzêdnych ka¿dego pocisku
-            for (const auto& bullet : enemyBullets) {
-                if(bullet.getBoundingBox().intersects(player.getBounds())){
+            for (auto bulletIt = enemyBullets.begin(); bulletIt != enemyBullets.end();) {
+                if (bulletIt->getBoundingBox().intersects(player.getBounds())) {
+                    // Zmniejsz ¿ycie gracza
                     interfejs.updateLives();
+                    // Usuñ pocisk
+                    bulletIt = enemyBullets.erase(bulletIt);
+                }
+                else {
+                    ++bulletIt;
                 }
             }
             
@@ -1052,6 +1088,7 @@ int main() {
                     }
                     if (collision) {
                         it = przeciwnik0->getSprites().erase(it);
+						przeciwnik0_stan++;
                     }
                     else {
                         ++it;
@@ -1059,6 +1096,10 @@ int main() {
 
                 }
             }
+			if (przeciwnik0_stan == 5) {
+				gameState = END_SCREEN;
+				wyniki.push_back(std::make_pair(nick, interfejs.getScore()));
+			}
             if (przeciwnik1 != nullptr) {
                 for (auto it = przeciwnik1->getSprites().begin(); it != przeciwnik1->getSprites().end(); ) {
                     bool collision = false;
@@ -1077,12 +1118,17 @@ int main() {
                     }
                     if (collision) {
                         it = przeciwnik1->getSprites().erase(it);
+						przeciwnik1_stan++; 
                     }
                     else {
                         ++it;
                     }
 
                 }
+            }
+            if (przeciwnik1_stan == 6) {
+                gameState = END_SCREEN;
+                wyniki.push_back(std::make_pair(nick, interfejs.getScore()));
             }
             if (przeciwnik2 != nullptr) {
                 for (auto it = przeciwnik2->getSprites().begin(); it != przeciwnik2->getSprites().end(); ) {
@@ -1102,12 +1148,18 @@ int main() {
                     }
                     if (collision) {
                         it = przeciwnik2->getSprites().erase(it);
+						przeciwnik2_stan++; 
                     }
                     else {
                         ++it;
                     }
 
                 }
+            }
+            if (przeciwnik2_stan == 7) {
+				gameState = END_SCREEN;
+				wyniki.push_back(std::make_pair(nick, interfejs.getScore()));
+
             }
             if (przeciwnik3 != nullptr) {
                 for (auto it = przeciwnik3->getSprites().begin(); it != przeciwnik3->getSprites().end(); ) {
@@ -1127,13 +1179,19 @@ int main() {
                     }
                     if (collision) {
                         it = przeciwnik3->getSprites().erase(it);
+						przeciwnik3_stan++;
                     }
                     else {
                         ++it;
                     }
 
                 }
-            }
+			}
+            if(przeciwnik3_stan == 8) {
+				gameState = END_SCREEN;
+				wyniki.push_back(std::make_pair(nick, interfejs.getScore()));
+			}
+            
             if (przeciwnik4 != nullptr) {
                 for (auto it = przeciwnik4->getSprites().begin(); it != przeciwnik4->getSprites().end(); ) {
                     bool collision = false;
@@ -1152,12 +1210,17 @@ int main() {
                     }
                     if (collision) {
                         it = przeciwnik4->getSprites().erase(it);
+						przeciwnik4_stan++;
                     }
                     else {
                         ++it;
                     }
 
                 }
+            }
+            if (przeciwnik4_stan == 9) {
+                gameState = END_SCREEN;
+                wyniki.push_back(std::make_pair(nick, interfejs.getScore()));
             }
             if (przeciwnik5 != nullptr) {
                 for (auto it = przeciwnik5->getSprites().begin(); it != przeciwnik5->getSprites().end(); ) {
@@ -1177,6 +1240,7 @@ int main() {
                     }
                     if (collision) {
                         it = przeciwnik5->getSprites().erase(it);
+                        przeciwnik5_stan++;
                     }
                     else {
                         ++it;
@@ -1184,13 +1248,17 @@ int main() {
 
                 }
             }
+            if (przeciwnik5_stan == 14) {
+                gameState = END_SCREEN;
+                wyniki.push_back(std::make_pair(nick, interfejs.getScore()));
+            }
 
             for (auto& pocisk : pociski) {
                 pocisk.przesun();
             }
             // Aktualizuj wynik i ¿ycie 
            
-
+            
 			
 
             window.clear();
@@ -1206,42 +1274,42 @@ int main() {
                 przeciwnik0->draw(window);
             }
             else {
-                std::cerr << "przeciwnik0 is nullptr!" << std::endl;
+                std::cerr << "przeciwnik0 nie istnieje!" << std::endl;
             }
 			if (przeciwnik1 != nullptr) {
 				przeciwnik1->ruch();
 				przeciwnik1->draw(window);
 			}
 			else {
-				std::cerr << "przeciwnik1 is nullptr!" << std::endl;
+				std::cerr << "przeciwnik1 nie istnieje!" << std::endl;
 			}
 			if (przeciwnik2 != nullptr) { 
 				przeciwnik2->ruch();
 				przeciwnik2->draw(window);
 			}
 			else {
-				std::cerr << "przeciwnik2 is nullptr!" << std::endl;
+				std::cerr << "przeciwnik2 nie istnieje!" << std::endl;
 			}
 			if (przeciwnik3 != nullptr) {
 				przeciwnik3->ruch();
 				przeciwnik3->draw(window);
 			}
 			else {
-				std::cerr << "przeciwnik3 is nullptr!" << std::endl;
+				std::cerr << "przeciwnik3 nie istnieje!" << std::endl;
 			}
 			if (przeciwnik4 != nullptr) {
 				przeciwnik4->ruch();
 				przeciwnik4->draw(window);
 			}
 			else {
-				std::cerr << "przeciwnik4 is nullptr!" << std::endl;
+				std::cerr << "przeciwnik4 nie istnieje!" << std::endl;
 			}
 			if (przeciwnik5 != nullptr) {
 				przeciwnik5->ruch();
 				przeciwnik5->draw(window);
 			}
 			else {
-				std::cerr << "przeciwnik5 is nullptr!" << std::endl;
+				std::cerr << "przeciwnik5 nie istnieje!" << std::endl;
 			}
 			
             if (clock.getElapsedTime() >= shootInterval) {
@@ -1273,6 +1341,7 @@ int main() {
                 ekran_koncowy ekranKoncowy(wyniki, nick, interfejs.getLives());
                 gameState = END_SCREEN;
             }
+			
         }
         else if (gameState == END_SCREEN) {
             window.clear();
@@ -1284,6 +1353,40 @@ int main() {
                 return 0;
             }
 			if (wybor_koncowy.getstan4() == true) {
+				window.clear();
+				interfejs.ZyciaReset();
+                przeciwnik0_stan = 0;
+                przeciwnik1_stan = 0;
+                przeciwnik2_stan = 0;
+                przeciwnik3_stan = 0;
+                przeciwnik4_stan = 0;
+                przeciwnik5_stan = 0;
+                delete przeciwnik0;
+                delete przeciwnik1;
+                delete przeciwnik2;
+                delete przeciwnik3;
+                delete przeciwnik4;
+                delete przeciwnik5;
+                przeciwnik0 = nullptr;
+                przeciwnik1 = nullptr;
+                przeciwnik2 = nullptr;
+                przeciwnik3 = nullptr;
+                przeciwnik4 = nullptr;
+                przeciwnik5 = nullptr;
+                pociski.clear();
+                enemyBullets.clear();
+				player.reset();
+
+              
+                interfejs.ZyciaReset();
+                interfejs.liczba_wynik = 0;
+                interfejs.updateText();
+
+              
+                wyborPoziomu.reset();
+
+               
+                clock.restart();
 				gameState = MENU;
 			}
 
